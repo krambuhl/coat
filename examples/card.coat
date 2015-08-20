@@ -1,0 +1,21 @@
+{!import heading './heading.coat'}
+
+<div class="card {class}">
+  {@card-header}
+    <header class="card-header">
+      <heading level="3">{>contents}</heading>
+    </header>
+  {/card-header}
+
+  {@card-body}
+    <div class="card-body">
+      {>contents}
+    </div>
+  {/card-body}
+
+  {@card-footer}
+    <footer class="card-footer">
+      {>contents}
+    </footer>
+  {/card-footer}
+</div>

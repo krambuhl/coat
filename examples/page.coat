@@ -1,0 +1,21 @@
+{!import strata './strata.coat'}
+{!import profile-card './profile-card.coat'}
+{!import cardgrid './cardgrid.coat'}
+{!import card './card.coat'}
+
+<strata>
+  <profile-card>
+    <card-header src="/image.png" alt="some text">Person McDogson</card-header>
+  </profile-card>
+</strata>
+
+<strata>
+  <cardgrid columns="3">
+    {#each card in cardlist}
+      <card>
+        <card-header>{card.title}</card-header>
+        <card-body>{card.body|safe}</card-body>
+      </card>
+    {/each}
+  </cardgrid>
+</strata>

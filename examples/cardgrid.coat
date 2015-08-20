@@ -1,0 +1,3 @@
+<div class="cardgrid {#if columns}m-{columns}{/columns}">
+  {>contents}
+</div>

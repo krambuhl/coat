@@ -1,0 +1,5 @@
+<section class="strata">
+  <div class="wrapper">
+    {>contents}
+  </div>
+</section>
