@@ -3,19 +3,19 @@
 <div class="card {class}">
   {@card-header}
     <header class="card-header">
-      <heading level="3">{>contents}</heading>
+      <heading level="3">{>yield}</heading>
     </header>
   {/card-header}
 
   {@card-body}
     <div class="card-body">
-      {>contents}
+      {>yield}
     </div>
   {/card-body}
 
   {@card-footer}
     <footer class="card-footer">
-      {>contents}
+      {>yield}
     </footer>
   {/card-footer}
 </div>
