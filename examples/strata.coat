@@ -1,5 +1,7 @@
-<section class="strata">
-  <div class="wrapper">
+{!import wrapper './wrapper.coat'}
+
+<section class="strata {class}">
+  <wrapper>
     {>contents}
-  </div>
+  </wrapper>
 </section>
