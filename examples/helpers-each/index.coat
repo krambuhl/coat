@@ -1,0 +1,7 @@
+<h1>{title}</h1>
+
+<ul>
+{#each employees}
+  <li><strong>{this.name}</strong> {this.title}</li>
+{/each}
+</ul>

@@ -1,0 +1,1 @@
+<h{ level|default(1) } class="heading">{!yield}</h{ level|default(1) }>

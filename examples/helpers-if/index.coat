@@ -1,0 +1,9 @@
+<h1>C-Level Employees</h1>
+
+<ul>
+{#each employees}
+  {#if this.title|contains('C') }
+    <li><strong>{this.name}</strong> {this.title}</li>
+  {/if}
+{/each}
+</ul>

@@ -1,3 +1,0 @@
-<h{ level|default(3) } class="heading">
-  {>yield}
-</h{ level|default(3) }>  

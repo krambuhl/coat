@@ -1,203 +1,142 @@
 # Coat Templating Language
 
-Coat templates attempt to provide a powerful syntax inspired by react, handlebars and swig.
+Coat templates attempt to provide a powerful syntax sharing similarities to handlebars and swig.  Each coat file describes an element that can be rendered, composed, imported, and/or extended. 
 
-## Variables
+## Langage Documentation
 
-Variables use single mustache syntax.  Variables can be selected using dot seperated object paths (eg. `{user.photo.width}`). 
+
+### Variables
+
+Variables use single mustache syntax.  Variables can be selected using dot seperated object paths (eg. `{user.photo.width}`).  Arrays can be accessed using dot syntax as well (ed. `{items.2.title}`)
 
 ```html
 <h2>{title}</h2>
 ```
 
-## Filters
 
-Filters can be used to manipulate variables.  They can be chained using the pipe `|` character (eg. `{user.name|capitalize}`)
 
-- `date(format)`
-- `default(var)`
-- `capitalize`
-- `uppercase`
-- `lowercase`
-- `camelcase`
-- `split(string)`
-- `join(string)`
-- `first`
-- `last`
-- `nth(n)`
-- `limit(n)`
-- `filter(obj)`
-- `reject(obj)`
-- `where(obj)`
-- `reverse`
-- `sort`
-- `groupBy(property)`
-- `sortBy(property)`
-- `unique`
-- `striptags`
-- `escape`
-- `safe`
+### Filters
 
-###### Example
+Filters can be used to manipulate variables.  They can be chained using the pipe `|` character (eg. `{ user.names|first|capitalize }`).  Filters are plugin based, described in more detail in [addFilter](#addfilter).
 
 ```html
 <span>{date|format('MM-YYYY')}</span>
 ```
 
 
-## Helpers
+### Helpers
 
-Coat helpers behave very similar to handlebars helpers, so google results for handlebars can be relevant.
-
-- `#if cond`
-- `#unless cond`
-- `#each list`
-- `#for min max`
-
-###### Example
+Helpers are logical blocks in code. Inside they create a new scoped variable called `this` that references the current iterator and `loop` that references helper variables. Helpers are plugin based, described in more detail in [addHelper](#addhelper).
 
 ```html
-{!import card './card.coat'}
-
-<div class="cardgrid">
-  {#each cardlist}
-    <card>
-      <card-header>{this.title}</card-header>
-    </card>
+<ul>
+  {#each cast}
+    <li>{loop.index} - {this.name}</li>
   {/each}
-</div>
+</ul>
 ```
 
 
-## Directives
+### Directives
 
-Directives are modify how modules are processed by the precompiler.
-
-- `!import name module`
-- `!extends module`
-- `!parent`
-
-###### Example
+Directives modify how modules are processed by the precompiler.  
 
 ```html
-{!import card './card.coat'}
-
-<card>Mr. Magazine Man</card>
+{!import link './link.coat'}
+<!-- import can overwrite built-in elements -->
+<link href="#/123">123ABC</link>
 ```
 
 
-## Yield Point
+### Yield Point
 
-The yield keyword defines a yield point in a template module.  Each template can define one root yield point.  A Yield Point is prefixed with `>` like `{>yield}`. 
+The yield keyword defines a yield point in a template module.  Each template can define one yield point using the `!yield` directive. This can be used to fill with content or further composed with other modules.
 
 ```html
 <!-- link.coat -->
-<a href="{href}">{>yield}</a>
+<a href="{href}" class="link">{!yield}</a>
 
 <!-- page.coat -->
 {!import link './link.coat'}
 <link href="#/abc">ABC</link>
+```
 
+```html
 <!-- output.html -->
-<a href="#/abc">ABC</a>
+<a href="#/abc" class="link">ABC</a>
 ```
 
 
-## Blocks
+### Yield Block
 
-Blocks define sub-yield points inside of a template.  Blocks can be extended and modified using the `{!extends}` and `{!parent}` directives.  
+Yield Blocks are used to define multiple yield points inside of a template. They can be extended and modified using the `!extends` directive.  Blocks are similar to using the `!import` directive to import and use another module, but allows for more elegant module composition and inheritance.
 
 ```html
-<!-- tag.coat -->
-<a href="#/tag/{href}" class="tag">{>yield}</div>
-
 <!-- card.coat -->
 <div class="card">
-  {@card-header}
-    <h3 class="heading">{>yield}</h3>
-  {/card-header}
+  {@header}
+    <header>
+      <h3>{!yield}</h3>
+    </header>
+  {/header}
 
-  {@card-body}
-    <div>{>yield}</div>
-    <ul>
-      {#each meta.tags}
-        <li><tag href="{this|safe}">{this}</tag></li>
-      {/each}
-    </ul>
-  {/card-body}
+  {!yield}
 </div>
 
 <!-- page.coat -->
 {!import card './card.coat'}
 
 <card>
-  <card-header>{title}</card-header>
-  <card-body><p>{body|safe}</p></card-body>
+  <card-header>Hello Beautiful World</card-header>
+  <p>Lorem ipsum Commodo mollit amet ut dolore ullamco ad.</p>
 </card>
+```
 
+```html
 <!-- output.html -->
 <div class="card">
-  <h3 class="heading">Hello Beautiful World</h3>
-  <p>Lorem ipsum Deserunt.</p>
+  <header>
+    <h3>Hello Beautiful World</h3>
+  </header>
+  <p>Lorem ipsum Commodo mollit amet ut dolore ullamco ad.</p>
 </div>
 ```
 
 ## Module Inheritance
 
-```html
-<!-- media.coat -->
-<div class="media {class}">
-  {@media-header}
-    <header>
-      <h1>{>yeild}</h1>
-    </header>
-  {/media-header}
-
-  {@media-body}{>yield}{/media-body}
-</div>
-
-<!-- media-special.coat -->
-{!extends './media.coat'}
-
-{@media-header}
-  <div><img src="{src}" alt="{alt}" /></div>
-  {!parent}
-{/media-header}
-
-<!-- output.coat -->
-{!import media './media.coat'}
-{!import media-special './media-special.coat'}
-
-<media>
-  <media-header>Hello there</media-header>
-</media>
-
-<media-special>
-  <media-header src="./image.jpg" alt="hello!">Hello there</media-header>
-  <media-body>
-    <p>Lorem ipsum</p>
-  </media-body>
-</media-special>
-```
-
-###### output.html
+Modules can be extended using the `!extends` directive, this allows you to reuse another modules structure and redefine specific yield blocks.
 
 ```html
-<div class="media">
-  <header>
-    <h1>Hello there</h1>
-  </header>
-</div>
+<!-- media-card.coat -->
+{!extends "./card.coat"}
 
-<div class="media">
-  <div><img src="./image.jpg" alt="hello!" /></div>
+{@header}
   <header>
-    <h1>Hello there</h1>
+    <img src="{src}" alt="{title}" />
+    <h1>{!yield}</h1>
   </header>
+{/header}
 
-  <p>Lorem ipsum</p>
+<!-- page.coat -->
+{!import mcard './media-card.coat'}
+
+<mcard type="image">
+    <mcard-header src="http://lorempixel.com/400/200" title="Card #4">Card #4</mcard-header>
+    Lorem ipsum Aliqua in ea amet anim sed deserunt.
+</mcard>
+```
+
+```html
+<!-- output.html -->
+<div class="card" data-type="image">
+  <header class="card-header">
+    <img src="http://lorempixel.com/400/200" alt="Card #4" />
+    <h1>Card #4</h1>
+  </header>
+  <div class="card-content">Lorem ipsum Aliqua in ea amet anim sed deserunt.</div>
 </div>
 ```
+
 
 # Javascript API
 
@@ -209,85 +148,31 @@ The `coat` module includes a precompiler and a renderer, the renderer can be inc
 var Coat = require('coat');
 ```
 
-### precompile(filepath)
+### compile(filepath)
 
-Precompiles a coat template into a javascript function. The function accepts a JSON object argument and outputs a html string. Can be initiated with the `Coat.create` function to gain additional 
+Precompiles a coat template into a javascript function. The function accepts a JSON object argument and outputs a html string.
 
 ```js
-var PageTemplate = Coat.precompile('./page.coat');
+var PageTemplate = Coat.compile('./page.coat');
 ```
 
-## Coat Runtime
-
-`coat-runtime` is built into the full library, but can be required seperately with precompiled templates to reduce file size.
+### addFilter
 
 ```js
-var CoatRuntime = require('coat-runtime');
-```
-
-### create(Template, data)
-
-Creates an instance of the template, can optionally pass data (uses `set` method) before template is rendered.  An instance is not rendered by default, 
-
-```js
-var homepage = CoatRuntime.create(PageTemplate);
-```
-
-## Template Instance
-
-### set(property, value)
-
-__set({ property: value })__
-
-Set/update a property.  Multiple properties can be set by passing an object as an argument.  Passing undefined as a value will remove property.
-
-```js
-homepage.set({ 
-  title: 'Hello World', 
-  body: 'Lorem ipsum Deserunt.',
-  meta: {
-    tags: ['pickle', 'hamburger']
-  } 
-})
-```
-
-### get(path)
-
-Returns template data at specified path. If no path is passed, all template data is returned.
-
-```js
-homepage.get('title') == 'Hello Beautiful World';
-homepage.get('meta.tags.0') == 'pickle';
-```
-
-### render(element)
-
-Renders template inside passed dom element. 
-
-```js
-homepage.render(document.getElementById('#page'));
-```
-
-### select(selector, config)
-
-Selects a element by selector and provides an interface for tracking the entrance and exit of new elements.
-
-```js
-var CardView = require('someviewlibrary/card-view.js');
-
-homepage.select('.card').state({
-  enter: function(el, store) { 
-    return new CardView({ el: el, store: store });
-  },
-  exit: function(view) { view.destroy(); }
+Coat.addFilter('nth', function(contents, n) {
+    return contents[n];
 });
 
-homepage.select('.tag').state({
-  enter: function(el, store) { 
-    return new TagView({ el: el, store: store });
-  },
-  exit: function(view) { view.destroy(); }
+Coat.addFilter('first', function(contents) {
+    return contents[0];
 });
+```
 
+### addHelper
+
+```js
+Coat.addHelper('nth', function(contents, n) {
+    return contents[n];
+});
 ```
 

@@ -1,0 +1,8 @@
+{!extends "./card.coat"}
+
+{@header}
+  <header class="card-header">
+    <img src="{src}" alt="{title}" />
+    <h1>{!yield}</h1>
+  </header>
+{/header}

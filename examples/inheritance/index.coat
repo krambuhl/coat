@@ -1,0 +1,11 @@
+{!import mcard "./media-card.coat"}
+
+{#each cards}
+  <mcard type="media">
+    {#if this.title}
+      <mcard-header src="{this.src}" title="{this.title}">{this.title}</mcard-header>
+    {/if}
+
+    {this.contents}
+  </mcard>
+{/each}

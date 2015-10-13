@@ -1,0 +1,3 @@
+<div>First: { names|first }</div>
+<div>Second: { names|nth(1) }</div>
+<div>Third: { names|nth(2) }</div>

@@ -1,3 +1,0 @@
-<div class="cardgrid {#if columns}m-{columns}{/columns}">
-  {>yield}
-</div>

@@ -1,7 +1,0 @@
-{!import wrapper './wrapper.coat'}
-
-<section class="strata {class}">
-  <wrapper>
-    {>yield}
-  </wrapper>
-</section>

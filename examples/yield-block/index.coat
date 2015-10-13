@@ -1,0 +1,11 @@
+{!import card "./card.coat"}
+
+{#each cards}
+  <card>
+    {#if this.title}
+      <card-header>{this.title}</card-header>
+    {/if}
+
+    {this.contents}
+  </card>
+{/each}

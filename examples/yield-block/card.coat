@@ -1,0 +1,9 @@
+<div class="card">
+  {@header}
+    <header class="card-header">
+      <h1>{!yield}</h1>
+    </header>
+  {/header}
+
+  <div class="card-content">{!yield}</div>
+</div>
